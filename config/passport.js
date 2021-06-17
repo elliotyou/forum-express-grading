@@ -15,7 +15,7 @@ passport.use(new LocalStrategy(
   (req, username, password, done) => {
     User.findOne({ where: { email: username } }).then(user => {
       if (!user) return done(null, false, req.flash('error_msg', '帳號或密碼輸入錯誤'))
-      console.log('into config/passport.js/line19')
+      // console.log('into config/passport.js/line19')
       if (!bcrypt.compareSync(password, user.password)) {
         return done(null, false, req.flash('error_msg', '帳號或密碼輸入錯誤'))
       }
