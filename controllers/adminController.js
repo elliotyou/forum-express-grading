@@ -23,10 +23,17 @@ const adminController = {
       opening_hours: req.body.opening_hours,
       description: req.body.description
     })
-      .then(restaurant => {
+      .then(() => {
         req.flash('success_msg', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
       })
+  },
+  getRestaurant: (req, res) => {
+    return Restaurant.findByPk(req.params.id, {
+      raw: true
+    }).then(restaurant => {
+      return res.render('admin/restaurant', { restaurant })
+    })
   }
 }
 
