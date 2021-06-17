@@ -2,6 +2,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const db = require('./models')
 const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
@@ -20,6 +21,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(methodOverride('_method'))
 
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
