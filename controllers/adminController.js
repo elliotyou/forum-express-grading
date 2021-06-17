@@ -40,6 +40,26 @@ const adminController = {
       .then(restaurant => {
         return res.render('admin/create', { restaurant })
       })
+  },
+  putRestaurant: (req, res) => {
+    if (!req.body.name) {
+      req.flash('error_msg', 'name did not exist')
+      return res.redirect('back')
+    }
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        restaurant.update({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hours: req.body.opening_hours,
+          description: req.body.description
+        })
+          .then(() => {
+            req.flash('success_msg', 'restaurant was updated successfully')
+            res.redirect('/admin/restaurants')
+          })
+      })
   }
 }
 
