@@ -1,4 +1,7 @@
+const fs = require('fs')
+const { isBuffer } = require('util')
 const db = require('../models')
+const restaurant = require('../models/restaurant')
 const Restaurant = db.Restaurant
 
 const adminController = {
@@ -16,17 +19,37 @@ const adminController = {
       req.flash('error_msg', 'name did not exist')
       return res.redirect('back')
     }
-    return Restaurant.create({
-      name: req.body.name,
-      tel: req.body.tel,
-      address: req.body.address,
-      opening_hours: req.body.opening_hours,
-      description: req.body.description
-    })
-      .then(() => {
-        req.flash('success_msg', 'restaurant was successfully created')
-        res.redirect('/admin/restaurants')
+    const { file } = req
+    if (file) {
+      fs.readFile(file.path, (err, data) => {
+        if (err) console.log('Error:', err)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Restaurant.create({
+            name: req.body.name,
+            tel: req.body.tel,
+            address: req.body.address,
+            opening_hours: req.body.opening_hours,
+            description: req.body.description,
+            image: file ? `/upload/${file.originalname}` : null
+          }).then(() => {
+            req.flash('success_msg', 'restaurant was successfully created')
+            return res.redirect('/admin/restaurants')
+          })
+        })
       })
+    } else {
+      return Restaurant.create({
+        name: req.body.name,
+        tel: req.body.tel,
+        address: req.body.address,
+        opening_hours: req.body.opening_hours,
+        description: req.body.description,
+        image: null
+      }).then(() => {
+        req.flash('success_msg', 'restaurant was successfully created')
+        return res.redirect('/admin/restaurants')
+      })
+    }
   },
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
@@ -42,24 +65,51 @@ const adminController = {
       })
   },
   putRestaurant: (req, res) => {
+    console.log('into adminController/putRestaurant...')
     if (!req.body.name) {
       req.flash('error_msg', 'name did not exist')
       return res.redirect('back')
     }
-    return Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
-        restaurant.update({
-          name: req.body.name,
-          tel: req.body.tel,
-          address: req.body.address,
-          opening_hours: req.body.opening_hours,
-          description: req.body.description
+    const { file } = req
+    if (file) {
+      console.log('--into if(file), file=', file)
+      fs.readFile(file.path, (err, data) => {
+        if (err) console.log('Error:', err)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          console.log(`--into fs.writeFile...path=upload/${file.originalname}`)
+          return Restaurant.findByPk(req.params.id)
+            .then(restaurant => {
+              restaurant.update({
+                name: req.body.name,
+                tel: req.body.tel,
+                address: req.body.address,
+                opening_hours: req.body.opening_hours,
+                description: req.body.description,
+                image: file ? `/upload/${file.originalname}` : restaurant.image
+              }).then((restaurant) => {
+                console.log('after uploading ... restaurant.img=', restaurant.image)
+                req.flash('success_msg', 'restaurant was successfully updated')
+                res.redirect('/admin/restaurants')
+              })
+            })
         })
-          .then(() => {
-            req.flash('success_msg', 'restaurant was updated successfully')
+      })
+    } else {
+      return Restaurant.findByPk(req.params.id)
+        .then(restaurant => {
+          restaurant.update({
+            name: req.body.name,
+            tel: req.body.tel,
+            address: req.body.address,
+            opening_hours: req.body.opening_hours,
+            description: req.body.description,
+            image: restaurant.imag
+          }).then(() => {
+            req.flash('success_msg', 'restaurant was successfully updated')
             res.redirect('/admin/restaurants')
           })
-      })
+        })
+    }
   },
   deleteRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id)
