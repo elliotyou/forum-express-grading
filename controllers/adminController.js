@@ -1,8 +1,6 @@
 const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = 'a2127d53ccf7567'
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
-const fs = require('fs')
-// const { isBuffer } = require('util')  不知道哪個程序自動產生的，先註解掉
 const db = require('../models')
 const restaurant = require('../models/restaurant')
 const Restaurant = db.Restaurant
