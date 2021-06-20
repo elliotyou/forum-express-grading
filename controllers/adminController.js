@@ -1,5 +1,8 @@
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = 'a2127d53ccf7567'
+
 const fs = require('fs')
-const { isBuffer } = require('util')
+// const { isBuffer } = require('util')  不知道哪個程序自動產生的，先註解掉
 const db = require('../models')
 const restaurant = require('../models/restaurant')
 const Restaurant = db.Restaurant
@@ -21,20 +24,18 @@ const adminController = {
     }
     const { file } = req
     if (file) {
-      fs.readFile(file.path, (err, data) => {
-        if (err) console.log('Error:', err)
-        fs.writeFile(`upload/${file.originalname}`, data, () => {
-          return Restaurant.create({
-            name: req.body.name,
-            tel: req.body.tel,
-            address: req.body.address,
-            opening_hours: req.body.opening_hours,
-            description: req.body.description,
-            image: file ? `/upload/${file.originalname}` : null
-          }).then(() => {
-            req.flash('success_msg', 'restaurant was successfully created')
-            return res.redirect('/admin/restaurants')
-          })
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        return Restaurant.create({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hours: req.body.opening_hours,
+          description: req.body.description,
+          image: file ? img.data.link : null
+        }).then(() => {
+          req.flash('success_msg', 'restaurant was successfuly created')
+          return res.redirect('/admin/restaurants')
         })
       })
     } else {
@@ -72,27 +73,22 @@ const adminController = {
     }
     const { file } = req
     if (file) {
-      console.log('--into if(file), file=', file)
-      fs.readFile(file.path, (err, data) => {
-        if (err) console.log('Error:', err)
-        fs.writeFile(`upload/${file.originalname}`, data, () => {
-          console.log(`--into fs.writeFile...path=upload/${file.originalname}`)
-          return Restaurant.findByPk(req.params.id)
-            .then(restaurant => {
-              restaurant.update({
-                name: req.body.name,
-                tel: req.body.tel,
-                address: req.body.address,
-                opening_hours: req.body.opening_hours,
-                description: req.body.description,
-                image: file ? `/upload/${file.originalname}` : restaurant.image
-              }).then((restaurant) => {
-                console.log('after uploading ... restaurant.img=', restaurant.image)
-                req.flash('success_msg', 'restaurant was successfully updated')
-                res.redirect('/admin/restaurants')
-              })
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        return Restaurant.findByPk(req.params.id)
+          .then(restaurant => {
+            restaurant.update({
+              name: req.body.name,
+              tel: req.body.tel,
+              address: req.body.address,
+              opening_hours: req.body.opening_hours,
+              description: req.body.description,
+              image: file ? img.data.link : restaurant.image
+            }).then(() => {
+              req.flash('success_msg', 'rstaurant was successfully updated')
+              res.redirect('/admin/restaurants')
             })
-        })
+          })
       })
     } else {
       return Restaurant.findByPk(req.params.id)
@@ -103,7 +99,7 @@ const adminController = {
             address: req.body.address,
             opening_hours: req.body.opening_hours,
             description: req.body.description,
-            image: restaurant.imag
+            image: restaurant.image
           }).then(() => {
             req.flash('success_msg', 'restaurant was successfully updated')
             res.redirect('/admin/restaurants')
