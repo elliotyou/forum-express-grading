@@ -32,6 +32,8 @@ module.exports = (app, passport) => {
   app.get('/admin/restaurants/:id/edit', authenticatedAdmin, adminController.editRestaurant)
   app.put('/admin/restaurants/:id', authenticatedAdmin, upload.single('image'), adminController.putRestaurant)
   app.delete('/admin/restaurants/:id', authenticatedAdmin, adminController.deleteRestaurant)
+  app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+  app.put('/admin/users/:id/toggleAdmin', authenticatedAdmin, adminController.putUsers)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
@@ -41,7 +43,6 @@ module.exports = (app, passport) => {
   app.get('/logout', userController.logout)
 
   app.get('/', authenticated, (req, res) => {
-    console.log('into / ...routes/index.js')
     res.redirect('/restaurants')
   })
 }
