@@ -51,7 +51,13 @@ const userController = {
     console.log('into controllers/userController/line51...req.params.id', req.params.id)
     return User.findByPk(req.params.id)
       .then(user => {
-        return res.render('profile', { user: user.toJSON() })
+        return res.render('user', { user: user.toJSON() })
+      })
+  },
+  editUser: (req, res) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        return res.render('editUser', { user: user.toJSON() })
       })
   }
 }
