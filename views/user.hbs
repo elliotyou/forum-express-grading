@@ -1,16 +1,29 @@
-<div class="row mt-5">
-  <div class="col-12 col-md-4 d-flex justify-content-center">
+<div class="row my-5">
+  <div class="col-auto d-flex justify-content-center">
     {{#if user.image}}
-    <img style="height: 250px;width: 250px;background: url('{{user.image}}');background-size: cover;border-radius:50%;">
+    <img width="250px" height="250px" src="{{user.image}}" style="border-radius:50%;">
     {{else}}
-    <img
-      style="height: 250px;width: 250px;background: url('https://i.imgur.com/3P9xRqb.jpg');background-size: cover;border-radius:50%;">
+    <img width="250px" height="250px" src="https://i.imgur.com/3P9xRqb.jpg" style="border-radius:50%;">
     {{/if}}
   </div>
-  <div class="col-12 col-md-8 d-flex flex-column justify-content-center align-items-start">
+  <div class="col d-flex flex-column justify-content-center align-items-start">
     <h1>{{user.name}}</h1>
     <h3>{{user.email}}</h3>
     {{#if user.isAdmin}}<h3>管理者</h3>{{/if}}
     <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+  </div>
+</div>
+
+
+<div class="d-flex flex-column">
+  <div>
+    <p>{{count}} 已評論餐廳</p>
+  </div>
+  <div class="d-flex flex-wrap align-items-center">
+    {{#each restaurants}}
+    <a href="/restaurants/{{this.id}}">
+      <img class="mr-3 mb-3" src="{{this.image}}" width="70px" height="70px">
+    </a>
+    {{/each}}
   </div>
 </div>
