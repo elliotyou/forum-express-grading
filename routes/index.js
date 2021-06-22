@@ -3,8 +3,10 @@ const helpers = require('../_helpers')
 const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
-const multer = require('multer')
 const categoryController = require('../controllers/categoryController')
+const commentController = require('../controllers/commentController')
+
+const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 
 module.exports = (app, passport) => {
@@ -26,6 +28,7 @@ module.exports = (app, passport) => {
   app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticated, restController.getRestaurants)
   app.get('/restaurants/:id', authenticated, restController.getRestaurant)
+  app.post('/comments', authenticated, commentController.postComment)
 
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', authenticatedAdmin, adminController.getRestaurants)

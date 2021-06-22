@@ -46,6 +46,7 @@ const restController = {
       .then(restaurant => {
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
+      .catch(err => console.error(err))
   }
 }
 module.exports = restController
