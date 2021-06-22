@@ -1,16 +1,16 @@
-<h1>this is user</h1>
-
-user.id = {{user.id}}
-<br>
-user.name = {{user.name}}
-<br>
-user.email = {{user.email}}
-<br>
-user.isAdmin = {{user.isAdmin}}
-<br>
-{{#if user.image}}
-<img class="img-responsive center-block" src="{{user.image}}" style="width: 250px;margin-bottom: 25px;">
-{{/if}}
-<br>
-
-<a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+<div class="row mt-5">
+  <div class="col-12 col-md-4 d-flex justify-content-center">
+    {{#if user.image}}
+    <img style="height: 250px;width: 250px;background: url('{{user.image}}');background-size: cover;border-radius:50%;">
+    {{else}}
+    <img
+      style="height: 250px;width: 250px;background: url('https://i.imgur.com/3P9xRqb.jpg');background-size: cover;border-radius:50%;">
+    {{/if}}
+  </div>
+  <div class="col-12 col-md-8 d-flex flex-column justify-content-center align-items-start">
+    <h1>{{user.name}}</h1>
+    <h3>{{user.email}}</h3>
+    {{#if user.isAdmin}}<h3>管理者</h3>{{/if}}
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+  </div>
+</div>

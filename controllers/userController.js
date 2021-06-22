@@ -57,14 +57,15 @@ const userController = {
         return res.render('user', { user: user.toJSON() })
       })
   },
+
   editUser: (req, res) => {
     return User.findByPk(req.params.id)
       .then(user => {
         return res.render('editUser', { user: user.toJSON() })
       })
   },
+
   putUser: (req, res) => {
-    console.log('into controllers/userController/line68...req.body', req.body)
     if (!req.body.name) {
       req.flash('error_msg', 'name doesn\'t exist')
       return res.redirect('back')
