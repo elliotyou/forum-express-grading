@@ -21,7 +21,6 @@ const restController = {
       const totalPage = Array.from({ length: pages }).map((item, index) => (index + 1))
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
-
       const data = result.rows.map(r => ({
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50),
