@@ -51,6 +51,7 @@ const restController = {
       ]
     })
       .then(restaurant => {
+
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => console.error(err))
@@ -77,6 +78,12 @@ const restController = {
     } catch (err) {
       console.error(err)
     }
+  },
+  getRestaurantDashBoard: (req, res) => {
+    return Restaurant.findByPk(req.params.id, { include: [Category, Comment] })
+      .then(restaurant => {
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
   }
 }
 

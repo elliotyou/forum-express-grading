@@ -63,12 +63,10 @@ const userController = {
         nest: true
       })
       const restaurants = comments.map(comment => comment.Restaurant)
-      const count = restaurants.length
       const targetedUser = await User.findByPk(req.params.id)
       return res.render('user', {
         targetedUser: targetedUser.toJSON(),
         restaurants,
-        count,
         isMySelf
       })
     } catch (err) {
