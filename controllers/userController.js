@@ -64,9 +64,9 @@ const userController = {
       })
       const restaurants = comments.map(comment => comment.Restaurant)
       const count = restaurants.length
-      const user = await User.findByPk(req.params.id)
+      const targedUser = await User.findByPk(req.params.id)
       return res.render('user', {
-        user: user.toJSON(),
+        targedUser: targedUser.toJSON(),
         restaurants,
         count,
         isMySelf
