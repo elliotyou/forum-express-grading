@@ -1,16 +1,16 @@
 <div class="row my-5">
   <div class="col-auto d-flex justify-content-center">
-    {{#if targedUser.image}}
-    <img width="250px" height="250px" src="{{targedUser.image}}" style="border-radius:50%;">
+    {{#if targetedUser.image}}
+    <img width="250px" height="250px" src="{{targetedUser.image}}" style="border-radius:50%;">
     {{else}}
     <img width="250px" height="250px" src="https://i.imgur.com/3P9xRqb.jpg" style="border-radius:50%;">
     {{/if}}
   </div>
   <div class="col d-flex flex-column justify-content-center align-items-start">
-    <h1>{{targedUser.name}}</h1>
-    <h3>{{targedUser.email}}</h3>
-    {{#if targedUser.isAdmin}}<h3>管理者</h3>{{/if}}
-    {{#if isMySelf}}<a class="btn btn-primary" href="/users/{{targedUser.id}}/edit">Edit</a>{{/if}}
+    <h1>{{targetedUser.name}}</h1>
+    <h3>{{targetedUser.email}}</h3>
+    {{#if targetedUser.isAdmin}}<h3>管理者</h3>{{/if}}
+    {{#if isMySelf}}<a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>{{/if}}
   </div>
 </div>
 
