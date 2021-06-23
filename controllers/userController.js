@@ -54,6 +54,7 @@ const userController = {
   },
 
   getUser: async (req, res) => {
+    const isMySelf = req.user.id.toString() === req.params.id.toString()
     try {
       const comments = await Comment.findAll({
         include: Restaurant,
@@ -67,7 +68,8 @@ const userController = {
       return res.render('user', {
         user: user.toJSON(),
         restaurants,
-        count
+        count,
+        isMySelf
       })
     } catch (err) {
       console.error(err)
@@ -75,6 +77,11 @@ const userController = {
   },
 
   editUser: (req, res) => {
+    const isMySelf = req.user.id.toString() === req.params.id.toString()
+    if (!isMySelf) {
+      req.flash('error_msg', 'you can only edit your own profile!')
+      return res.redirect(`/users/${req.params.id}`)
+    }
     return User.findByPk(req.params.id)
       .then(user => {
         return res.render('editUser', { user: user.toJSON() })
