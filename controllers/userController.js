@@ -3,6 +3,7 @@ const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const db = require('../models')
+const helpers = require('../_helpers')
 const { getRestaurant } = require('./restController')
 const User = db.User
 const Comment = db.Comment
@@ -54,7 +55,7 @@ const userController = {
   },
 
   getUser: async (req, res) => {
-    const isMySelf = req.user.id.toString() === req.params.id.toString()
+    const isMySelf = helpers.getUser(req).id.toString() === req.params.id.toString()
     try {
       const comments = await Comment.findAll({
         include: Restaurant,
@@ -75,7 +76,7 @@ const userController = {
   },
 
   editUser: (req, res) => {
-    const isMySelf = req.user.id.toString() === req.params.id.toString()
+    const isMySelf = helpers.getUser(req).id.toString() === req.params.id.toString()
     if (!isMySelf) {
       req.flash('error_msg', 'you can only edit your own profile!')
       return res.redirect(`/users/${req.params.id}`)
