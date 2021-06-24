@@ -1,4 +1,5 @@
 const db = require('../models')
+const restaurant = require('../models/restaurant')
 const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
@@ -43,18 +44,19 @@ const restController = {
       console.error(err)
     }
   },
-  getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: Comment, include: [User] }
-      ]
-    })
-      .then(restaurant => {
-
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+  getRestaurant: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [
+          Category,
+          { model: Comment, include: [User] }
+        ]
       })
-      .catch(err => console.error(err))
+      await restaurant.increment('viewCounts')
+      res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (err) {
+      console.error(err)
+    }
   },
   getFeeds: async (req, res) => {
     try {
