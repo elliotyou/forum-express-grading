@@ -10,7 +10,7 @@
     <h1>{{targetedUser.name}}</h1>
     <h3>{{targetedUser.email}}</h3>
     {{#if targetedUser.isAdmin}}<h3>管理者</h3>{{/if}}
-    {{#if isMySelf}}<a class="btn btn-primary" href="/targetedUsers/{{targetedUser.id}}/edit">Edit</a>{{/if}}
+    {{#if isMySelf}}<a class="btn btn-primary" href="/Users/{{targetedUser.id}}/edit">Edit</a>{{/if}}
   </div>
 </div>
 
