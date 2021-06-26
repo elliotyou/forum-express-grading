@@ -5,6 +5,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
 const helpers = require('../_helpers')
 const Favorite = db.Favorite
+const Like = db.Like
 const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
@@ -121,29 +122,58 @@ const userController = {
     }
   },
 
-  addFavorite: (req, res) => {
-    return Favorite.create({
-      UserId: req.user.id,
-      RestaurantId: req.params.restaurantId
-    })
-      .then(restaurant => {
-        return res.redirect('back')
-      })
-  },
-
-  removeFavorite: (req, res) => {
-    return Favorite.findOne({
-      where: {
+  addFavorite: async (req, res) => {
+    try {
+      await Favorite.create({
         UserId: req.user.id,
         RestaurantId: req.params.restaurantId
-      }
-    })
-      .then(favorite => {
-        favorite.destroy()
-          .then(restaurant => {
-            return res.redirect('back')
-          })
       })
+      return res.redirect('back')
+    } catch (err) {
+      console.error(err)
+    }
+  },
+
+  removeFavorite: async (req, res) => {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          UserId: req.user.id,
+          RestaurantId: req.params.restaurantId
+        }
+      })
+      await favorite.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      console.error(err)
+    }
+  },
+
+  addLike: async (req, res) => {
+    try {
+      await Like.create({
+        UserId: req.user.id,
+        RestaurantId: req.params.restaurantId
+      })
+      return res.redirect('back')
+    } catch (err) {
+      console.error(err)
+    }
+  },
+
+  removeLike: async (req, res) => {
+    try {
+      const like = await Like.findOne({
+        where: {
+          UserId: req.user.id,
+          RestaurantId: req.params.restaurantId
+        }
+      })
+      await like.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      console.error(err)
+    }
   }
 }
 
