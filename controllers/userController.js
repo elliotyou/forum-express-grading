@@ -125,7 +125,7 @@ const userController = {
   addFavorite: async (req, res) => {
     try {
       await Favorite.create({
-        UserId: req.user.id,
+        UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
       })
       return res.redirect('back')
@@ -138,7 +138,7 @@ const userController = {
     try {
       const favorite = await Favorite.findOne({
         where: {
-          UserId: req.user.id,
+          UserId: helpers.getUser(req).id,
           RestaurantId: req.params.restaurantId
         }
       })
@@ -152,7 +152,7 @@ const userController = {
   addLike: async (req, res) => {
     try {
       await Like.create({
-        UserId: req.user.id,
+        UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
       })
       return res.redirect('back')
@@ -165,7 +165,7 @@ const userController = {
     try {
       const like = await Like.findOne({
         where: {
-          UserId: req.user.id,
+          UserId: helpers.getUser(req).id,
           RestaurantId: req.params.restaurantId
         }
       })
