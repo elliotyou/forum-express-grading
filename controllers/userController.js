@@ -2,14 +2,8 @@ const bcrypt = require('bcryptjs')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
-const db = require('../models')
+const { Favorite, Like, User, Comment, Restaurant, Followship } = require('../models')
 const helpers = require('../_helpers')
-const Favorite = db.Favorite
-const Like = db.Like
-const User = db.User
-const Comment = db.Comment
-const Restaurant = db.Restaurant
-const Followship = db.Followship
 
 const userController = {
   signUpPage: (req, res) => {
@@ -178,12 +172,11 @@ const userController = {
     }
   },
 
-  getTopUser: (req, res) => {
-    return User.findAll({
-      include: [
-        { model: User, as: 'Followers' }
-      ]
-    }).then(users => {
+  getTopUser: async (req, res) => {
+    try {
+      let users = await User.findAll({
+        include: [{ model: User, as: 'Followers' }]
+      })
       users = users.map(user => ({
         ...user.dataValues,
         FollowerCount: user.Followers.length,
@@ -191,32 +184,36 @@ const userController = {
       }))
       users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
       return res.render('topUser', { users })
-    })
+    } catch (err) {
+      console.error(err)
+    }
   },
 
-  addFollowing: (req, res) => {
-    return Followship.create({
-      followerId: req.user.id,
-      followingId: req.params.userId
-    })
-      .then(() => {
-        return res.redirect('back')
-      })
-  },
-
-  removeFollowing: (req, res) => {
-    return Followship.findOne({
-      where: {
+  addFollowing: async (req, res) => {
+    try {
+      await Followship.create({
         followerId: req.user.id,
         followingId: req.params.userId
-      }
-    })
-      .then(followship => {
-        followship.destroy()
-          .then(() => {
-            return res.redirect('back')
-          })
       })
+      return res.redirect('back')
+    } catch (err) {
+      console.error(err)
+    }
+  },
+
+  removeFollowing: async (req, res) => {
+    try {
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+      await followship.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      console.error(err)
+    }
   }
 }
 
