@@ -51,7 +51,7 @@ const userController = {
   },
 
   getUser: async (req, res) => {
-    const isMySelf = helpers.getUser(req).id.toString() === req.params.id.toString()
+    const isMySelf = req.user.id.toString() === req.params.id.toString()
     try {
       const comments = await Comment.findAll({
         include: Restaurant,
@@ -72,7 +72,7 @@ const userController = {
   },
 
   editUser: (req, res) => {
-    const isMySelf = helpers.getUser(req).id.toString() === req.params.id.toString()
+    const isMySelf = req.user.id.toString() === req.params.id.toString()
     if (!isMySelf) {
       req.flash('error_msg', 'you can only edit your own profile!')
       return res.redirect(`/users/${req.params.id}`)
@@ -120,7 +120,7 @@ const userController = {
   addFavorite: async (req, res) => {
     try {
       await Favorite.create({
-        UserId: helpers.getUser(req).id,
+        UserId: req.user.id,
         RestaurantId: req.params.restaurantId
       })
       return res.redirect('back')
@@ -133,7 +133,7 @@ const userController = {
     try {
       const favorite = await Favorite.findOne({
         where: {
-          UserId: helpers.getUser(req).id,
+          UserId: req.user.id,
           RestaurantId: req.params.restaurantId
         }
       })
@@ -147,7 +147,7 @@ const userController = {
   addLike: async (req, res) => {
     try {
       await Like.create({
-        UserId: helpers.getUser(req).id,
+        UserId: req.user.id,
         RestaurantId: req.params.restaurantId
       })
       return res.redirect('back')
@@ -160,7 +160,7 @@ const userController = {
     try {
       const like = await Like.findOne({
         where: {
-          UserId: helpers.getUser(req).id,
+          UserId: req.user.id,
           RestaurantId: req.params.restaurantId
         }
       })
