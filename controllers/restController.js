@@ -42,6 +42,7 @@ const restController = {
       console.error(err)
     }
   },
+
   getRestaurant: async (req, res) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
@@ -64,6 +65,7 @@ const restController = {
       console.error(err)
     }
   },
+
   getFeeds: async (req, res) => {
     try {
       const [restaurants, comments] = await Promise.all([
@@ -87,6 +89,7 @@ const restController = {
       console.error(err)
     }
   },
+
   getRestaurantDashBoard: async (req, res) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, Comment] })
@@ -94,6 +97,23 @@ const restController = {
     } catch (err) {
       console.error(err)
     }
+  },
+
+  getTopRestaurant: async (req, res) => {
+    let restaurants = await Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
+    })
+    restaurants = restaurants.map(r => ({
+      ...r.dataValues,
+      description: r.dataValues.description.substring(0, 50),
+      FavoritedCount: r.FavoritedUsers.length,
+      isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
+    }))
+    restaurants = restaurants.sort((a, b) => b.FavoritedCount - a.FavoritedCount).slice(0, 10)
+
+    return res.render('topRestaurant', { restaurants })
   }
 }
 

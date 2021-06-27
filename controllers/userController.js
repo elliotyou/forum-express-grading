@@ -60,7 +60,6 @@ const userController = {
         nest: true
       })
       const restaurants = comments.map(comment => comment.Restaurant)
-      console.log('into userController/line69...req.params.id', req.params.id)
       const targetedUser = await User.findByPk(req.params.id)
       return res.render('user', {
         targetedUser: targetedUser.toJSON(),
