@@ -3,18 +3,13 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const { Restaurant, User, Category } = require('../models')
 
+const adminService = require('../services/adminService')
+
 const adminController = {
-  getRestaurants: async (req, res) => {
-    try {
-      const restaurants = await Restaurant.findAll({
-        raw: true,
-        nest: true,
-        include: [Category]
-      })
-      return res.render('admin/restaurants', { restaurants })
-    } catch (err) {
-      console.error(err)
-    }
+  getRestaurants: (req, res) => {
+    adminService.getRestaurants(req, res, (data) => {
+      return res.render('admin/restaurants', data)
+    })
   },
   createRestaurant: async (req, res) => {
     try {
