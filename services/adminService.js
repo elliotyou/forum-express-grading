@@ -1,3 +1,6 @@
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+
 const { Restaurant, Category } = require('../models')
 
 const adminService = {
