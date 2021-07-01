@@ -8,41 +8,33 @@ const categoryController = {
       return res.render('admin/categories', data)
     })
   },
-  postCategory: async (req, res) => {
-    try {
-      if (!req.body.name) {
-        req.flash('error_msg', 'name doesn\'t exist')
+  postCategory: (req, res) => {
+    categoryService.postCategory(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_msg', data['message'])
         return res.redirect('back')
       } else {
-        await Category.create({ name: req.body.name })
-        res.redirect('/admin/categories')
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  },
-  putCategory: async (req, res) => {
-    try {
-      if (!req.body.name) {
-        req.flash('error_msg', 'name doesn\'t exist')
-        return res.redirect('back')
-      } else {
-        const category = await Category.findByPk(req.params.id)
-        await category.update(req.body)
+        req.flash('success_msg', data['message'])
         return res.redirect('/admin/categories')
       }
-    } catch (err) {
-      console.error(err)
-    }
+    })
   },
-  deleteCategory: async (req, res) => {
-    try {
-      const category = await Category.findByPk(req.params.id)
-      await category.destroy()
-      return res.redirect('/admin/categories')
-    } catch (err) {
-      console.error(err)
-    }
+  putCategory: (req, res) => {
+    categoryService.putCategory(req, res, (data) => {
+      if (data['status' === 'error']) {
+        req.flash('error_msg', data['message'])
+        return res.redirect('back')
+      } else {
+        return res.redirect('/admin/categories')
+      }
+    })
+  },
+  deleteCategory: (req, res) => {
+    categoryService.deleteCategory(req, res, (data) => {
+      if (data['status'] === 'success') {
+        return res.redirect('/admin/categories')
+      }
+    })
   }
 }
 
